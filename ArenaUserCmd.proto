@@ -31,6 +31,8 @@ message ArenaUserCmd
 		stClearUsePosArenaUserCmd_CS	 = 25;	// 一键清空
 		stRequestTopUserArenaUserCmd_C	 = 26;	// 请求前三名数据
 		stReturnTopUserArenaUserCmd_S	 = 27;	// 返回前三名数据
+		stChangeOppUserArenaUserCmd_C	 = 28;	// 换一批挑战玩家请求
+		stReturnOppUserArenaUserCmd_S	 = 29;	// 返回挑战信息
 	}
 }
 
@@ -98,6 +100,17 @@ message stReturnMainArenaUserCmd_S
 	repeated TopUserData topuserdata	 = 9;	  /// 排名前三玩家信息
 }
 
+// 更换挑战玩家信息
+message stChangeOppUserArenaUserCmd_C
+{
+}
+
+// 返回挑战玩家信息
+message stReturnOppUserArenaUserCmd_S
+{
+	repeated OppuserData oppuserdata     = 1;     /// 对手信息
+}
+
 // 请求前三名数据
 message stRequestTopUserArenaUserCmd_C
 {
@@ -127,12 +140,6 @@ message stRefreshCDArenaUserCmd_CS
 message stRefreshTimesArenaUserCmd_CS
 {
 	optional uint32 challenge_tims = 1;     /// 挑战次数
-}
-
-// 更新对手数据
-message stReUserInfoArenaUserCmd_CS
-{
-	optional OppuserData oppuserdata = 1;    /// 对手信息
 }
 
 // 请求获取战报
@@ -292,4 +299,5 @@ message stClearUsePosArenaUserCmd_CS
 {
 	optional uint32 state = 1;      //服务器下发(成功设为1, 失败为0)
 }
+
 
