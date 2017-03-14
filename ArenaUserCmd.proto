@@ -1,0 +1,295 @@
+//武斗场协议
+package GameCmd;
+import "Cmd.proto";
+import "SkillUserCmd.proto";
+
+message ArenaUserCmd
+{
+	enum Param
+	{
+		stMainArenaUserCmd_C             = 3;   // 请求打开武斗场界面
+		stReturnMainArenaUserCmd_S       = 4;   // 武斗场主界面返回
+		stReportArenaUserCmd_C           = 5;   // 请求战报
+		stReportArenaUserCmd_S           = 6;   // 发送战报返回
+		stRankArenaUserCmd_C             = 7;   // 请求发送排行榜
+		stRankArenaUserCmd_S             = 8;   // 发送排行榜返回
+		stChallengeInviteArenaUserCmd_CS = 9;   // 玩家发起挑战邀请
+		stInviteResultArenaUserCmd_CS    = 10;  // 挑战邀请结果
+		stUserInfoArenaUserCmd_C         = 11;  // 请求查看玩家信息
+		stUserInfoArenaUserCmd_S         = 12;  // 请求查看玩家信息返回
+		stRefreshCDArenaUserCmd_CS       = 13;  // 刷新挑战CD
+		stRefreshTimesArenaUserCmd_CS    = 14;  // 刷新挑战次数
+		stBattleFinalArenaUserCmd_S      = 15;  // 战斗结束
+        stStartBattleArenaUserCmd_S      = 16;  // 战斗开始
+		stEnterMapArenaUserCmd_CS        = 17;  // 进入地图
+		stExitSceneArenaUserCmd_CS       = 18;  // 战斗结束退出
+		stArenaSceneOpenArenaUserCmd     = 20;  // 准备开始挑战
+		stSkillSettingArenaUserCmd_CS	 = 21;	// 武斗场技能设置
+		stGetSkillSettingArenaUserCmd_C  = 22;	// 请求获取技能设置的技能
+		stGetSkillSettingArenaUserCmd_S  = 23;	// 请求获取技能设置的技能返回
+		stUseSkillStatusArenaUserCmd_CS  = 24;	// 
+		stClearUsePosArenaUserCmd_CS	 = 25;	// 一键清空
+		stRequestTopUserArenaUserCmd_C	 = 26;	// 请求前三名数据
+		stReturnTopUserArenaUserCmd_S	 = 27;	// 返回前三名数据
+	}
+}
+
+
+//打开结果
+enum OpenResult
+{
+	OpenResult_OK        = 1;   ///成功开启 
+	OpenResult_TempClose = 2;   ///武斗场关闭
+	OpenResult_LevelLack = 3;   ///玩家等级不足
+}
+
+enum SimulationType
+{
+	SimulationType_PR  = 0;		// 人机对战
+	SimulationType_PSP = 1;		// 人和假人对战 
+	SimulationType_PP  = 2;		// 人人对战
+}
+
+// 请求武斗场主界面消息
+message stMainArenaUserCmd_C
+{
+}
+
+// 能挑战的对手的基本信息
+message OppuserData
+{
+	optional uint32 id              = 1;     /// 对手ID
+	optional uint32 job             = 2;     /// 对手职业
+	optional uint32 level           = 3;     /// 对手等级
+	optional string name            = 4;     /// 对手姓名
+	optional uint32 rank            = 5;     /// 对手排名
+	optional uint32 fight_power     = 6;     /// 对手战斗力
+	optional uint32 online_state    = 7;     /// 对手在线状态
+	optional uint32 isrobot			= 8;	 /// 对手是否是机器人
+	optional uint32 face			= 9;	 /// 对手脸部
+	repeated SuitData suit_data		= 10;	 /// 时装数据
+}
+
+// 排名靠前玩家的信息
+message TopUserData
+{
+	optional uint32 rank		    = 1;	/// 排名
+	optional uint32 job				= 2;	/// 职业
+	optional string name			= 3;	/// 名字
+	optional uint32 fight_power		= 4;	/// 战斗力
+	optional uint32 isrobot			= 5;	/// 是否是机器人
+	optional uint32 wdface			= 6;	/// 玩家模型
+	repeated SuitData suit_data     = 7;	/// 玩家时装
+	optional uint32 id				= 8;	/// 玩家ID
+	optional uint32 level			= 9;	/// 玩家等级
+}
+
+// 返回武斗场主界面
+message stReturnMainArenaUserCmd_S 
+{
+	optional uint32      rank            = 1;     /// 玩家的排名
+	optional uint32      fight_power     = 2;     /// 玩家的战斗力
+	repeated OppuserData oppuserdata     = 3;     /// 对手信息
+	optional uint32      challenge_times = 4;     /// 武斗场挑战次数
+	optional uint32      max_times       = 5;     /// 玩家的最大挑战次数
+	optional uint32      challenge_cd    = 6;     /// 武斗场挑战CD
+	optional uint32      reset_times     = 7;     /// 重置了多少次
+	optional uint32      resetcd_times   = 8;     /// 重置CD次数
+	repeated TopUserData topuserdata	 = 9;	  /// 排名前三玩家信息
+}
+
+// 请求前三名数据
+message stRequestTopUserArenaUserCmd_C
+{
+}
+
+// 返回前三名数据
+message stReturnTopUserArenaUserCmd_S
+{
+	repeated TopUserData topuserdata = 1;
+}
+
+// 挑战即将开始
+message stArenaSceneOpenArenaUserCmd
+{
+	optional uint32 offensive_id         = 1;    /// 挑战方ID
+	optional uint32 defensive_id         = 3;    /// 被挑战方ID
+	optional SimulationType type         = 5;    /// 挑战类型
+}
+
+// 刷新挑战CD
+message stRefreshCDArenaUserCmd_CS
+{
+	optional uint32 challenge_cd = 1;     /// 挑战CD
+}
+
+// 刷新挑战次数 
+message stRefreshTimesArenaUserCmd_CS
+{
+	optional uint32 challenge_tims = 1;     /// 挑战次数
+}
+
+// 更新对手数据
+message stReUserInfoArenaUserCmd_CS
+{
+	optional OppuserData oppuserdata = 1;    /// 对手信息
+}
+
+// 请求获取战报
+message stReportArenaUserCmd_C
+{
+}
+
+// 战斗结果
+enum BattleResult
+{
+	BattleResult_Win    = 1;
+	BattleResult_Defeat = 2;
+}
+
+// 战斗类型
+enum BattleType
+{
+	BattleType_offend = 1;       /// 攻
+	BattleType_defend = 2;       /// 守
+}
+
+// 战报结构
+message ArenaBattleLog
+{
+	optional uint32 userid      = 1;    /// 对手ID
+	optional string name        = 2;    /// 对手姓名
+	optional uint32 job         = 3;    /// 对手职业
+	optional uint32 result      = 4;    /// 战斗结果
+	optional uint32 result_type = 5;    /// 攻 守
+	optional uint32 rank        = 6;    /// 我的排行
+	optional uint32 change       = 7;    /// 排名变化
+	optional bool	isrobot		= 8;	/// 是不是机器人
+}
+
+// 发送战报
+message stReportArenaUserCmd_S
+{
+	repeated ArenaBattleLog arena_log = 1;
+}
+
+// 请求获取排行榜
+message stRankArenaUserCmd_C
+{
+}
+
+// 排行榜结构
+message RankData
+{
+	optional uint32 userid      = 1;    /// 玩家ID
+	optional uint32 rank        = 2;    /// 玩家排名
+	optional string name        = 3;    /// 玩家姓名
+	optional uint32 job         = 4;    /// 职业
+	optional uint32 level       = 5;    /// 等级
+	optional uint32 fight_power = 6;    /// 战斗力
+}
+
+// 发送排行榜
+message stRankArenaUserCmd_S
+{
+	repeated RankData rank_data = 1;    ///
+}
+
+// 挑战邀请结果
+enum ArenaInviteResult
+{
+	ArenaInviteResult_Accpet  = 1;
+	ArenaInviteResult_Reject  = 2;
+}
+
+// 发起挑战
+message stChallengeInviteArenaUserCmd_CS 
+{
+	optional uint32 offensive_id   = 1;    /// 发起人ID
+	optional string offensive_name = 2;
+	optional uint32 offender_rank  = 3;    /// 挑战者排名
+	optional uint32 defensive_id   = 4;    /// 被挑战人ID
+	optional string defensive_name = 5;
+	optional uint32 defendser_rank = 6;    /// 被挑战者排名
+}
+
+// 邀请结果
+message stInviteResultArenaUserCmd_CS
+{
+	optional uint32 offensive_id   = 1;    /// 发起人ID
+	optional uint32 result         = 2;    /// 挑战邀请结果
+}
+
+// 通知已经进入场景 
+message stEnterMapArenaUserCmd_CS
+{
+}
+
+// 通知战斗开始武斗场
+message stStartBattleArenaUserCmd_S
+{
+	optional uint32 battle_time = 1;
+}
+
+// 武斗场战斗结束,下发战斗结算 
+message stBattleFinalArenaUserCmd_S
+{
+	optional uint32 result   = 1;       // 战斗结果
+	optional uint32 cur_rank = 2;       // 当前排名
+	optional uint32 change    = 3;       // 排名变化
+	optional uint32 score    = 4;       // 获得积分
+}
+
+// 退出
+message stExitSceneArenaUserCmd_CS
+{
+}
+
+// 请求查看玩家信息
+message stUserInfoArenaUserCmd_C
+{
+	optional uint32 userid = 1;     
+}
+
+// 请求查看玩家信息返回
+message stUserInfoArenaUserCmd_S
+{
+}
+
+enum SkillStateArena
+{
+	SkillStateArena_One = 1;
+	SkillStateArena_Two = 2;
+}
+
+// 设置技能
+message stSkillSettingArenaUserCmd_CS
+{
+	optional uint32 skill_id    = 1;		// 技能ID
+	optional uint32 skill_state = 2;		// 状态
+	optional uint32 skill_index = 3;		// 技能位置
+	optional uint32 ret			= 4;		// 
+}
+
+//
+message stUseSkillStatusArenaUserCmd_CS
+{
+	optional uint32 status		= 1;		// 使用形态
+}
+
+// 
+message stGetSkillSettingArenaUserCmd_C
+{
+}
+
+message stGetSkillSettingArenaUserCmd_S
+{
+	optional uint32 status = 1;
+	repeated SkillUsePos status_pos = 2;
+}
+
+message stClearUsePosArenaUserCmd_CS
+{
+	optional uint32 state = 1;      //服务器下发(成功设为1, 失败为0)
+}
+
