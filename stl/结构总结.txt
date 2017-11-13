@@ -1,0 +1,8 @@
+std::vector<int> d;	// 内部用动态数组
+std::list<int> d1;	// 内部用链表
+std::deque<int> d2;	// 内部用动态缓存
+std::stack<int,list<int>> d3; // 内部默认用deque实现
+std::queue<int> d4;	// 内部默认用deque实现
+std::priority_queue<int> d5;  // 内部默认使用 vector<int> // 通过使用max-heap进行比较处理
+std::hash_map<int, int> m;  // 内部是 hash_table
+std::hash_set<int> s;

@@ -30,7 +30,6 @@ public:
     int findComplement(int num) {
         
            int x = floor(log2(num)) + 1;
-            
             return num^((1<<x)- 1);
 
         
