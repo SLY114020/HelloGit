@@ -1,0 +1,76 @@
+ share_ptr 采用引用计数的大概实现
+
+class A
+{
+public:
+	A(){
+		cout << "A()" << endl;
+	}
+	~A()
+	{
+		cout << "~A()" << endl;
+	}
+	void sayHello()
+	{
+		cout << "hello" << endl;
+	}
+};
+
+class ptr_count
+{
+public:
+	ptr_count():count(1){}
+	void plusOne()
+	{
+		++count;
+	}
+	void subOne()
+	{
+		--count;
+	}
+	int getCount(){ return count; }
+	int count;
+};
+
+
+class my_ptr
+{
+public:
+	my_ptr()
+	{
+	}
+	my_ptr(A* _a) :a(_a)
+	{
+		count = new ptr_count();
+	}
+	my_ptr(my_ptr& p) :a(p.a), count(p.count)
+	{
+		count->plusOne();
+	}
+	~my_ptr()
+	{
+		if (getCount() == 1)
+		{
+			delete a;
+			delete count;
+			return;
+		}
+		if (this->count)
+		{
+			this->count->subOne();
+		}
+	}
+	int getCount()
+	{
+		if (this->count)
+			return this->count->getCount();
+		return 0;
+	}
+	A* operator->()
+	{
+		return a;
+	}
+private:
+	A* a;
+	ptr_count* count;
+};
