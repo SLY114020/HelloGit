@@ -19,6 +19,30 @@
 	// int->ip
 	inet_ntoa
 */
+/**
+	gethostbyname()
+	gethostbyaddr()
+	
+	// 获取服务名称
+	getservbyname()
+	getservbyport()
+
+	getaddrinfo
+
+	// 大量读，大量写
+	readv   writev
+
+	// 貌似socket传送文件
+	sendfile(int socket, int filefd,...)
+
+	// 共享内存
+	// mmap   munmap
+	
+	用于内存数据移动
+	splice()
+
+
+*/
 
 void testIpInt()
 {
@@ -78,11 +102,22 @@ void server()
 	close(ss);
 }
 
+void C7_1()
+{
+	uid_t uid = getuid();
+	uid_t euid = geteuid();
+	printf("userid is %d, effective userid is : %d\n", uid, euid);
+
+	char buff[128];
+	char* path = getcwd(buff, 128);
+}
+
 int main()
 {
 	//byteorder();
 //	testIpInt();
-	server();
+//	server();
+	C7_1();
 	return 1;
 }
 
