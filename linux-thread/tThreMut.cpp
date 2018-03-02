@@ -2,9 +2,18 @@
 
 #include <iostream>
 #include <pthread.h>
-using namespace std;
+#include <thread>
 
-class Mutex
+class NonCopyable
+{
+public:
+	NonCopyable() = default;
+	NonCopyable(const NonCopyable& copy) = delete;
+	NonCopyable* operator=(const NonCopyable& copy) = delete;
+};
+
+
+class Mutex: public NonCopyable
 {
 public:
 	Mutex()
@@ -27,9 +36,23 @@ private:
 	pthread_mutex_t mutex;
 }mutex;
 
+class MutexLockGuard: public NonCopyable
+{
+public:
+	explicit MutexLockGuard(Mutex& mutex):_mutex(mutex){
+		_mutex.lock();
+	}
+	~MutexLockGuard()
+	{
+		_mutex.unlock();
+	}
+private:
+	Mutex& _mutex;
+};
+
 int i = 0;
 
-void* handler(void* arg)
+void handler()
 {
 	while(i <= 10)
 	{
@@ -40,20 +63,27 @@ void* handler(void* arg)
 			break;
 		}
 		i = i + 1;
-		cout<<i<<endl;
+		std::cout<<i<<std::endl;
 		mutex.unlock();
 	}
 }
 
 int main()
 {
-
-	pthread_t tid;
-	for(int j = 0; i < 2; j++)
+	// C++11 下   编写的线程
+	for(int j = 0; i < 2; ++j)
 	{
-		pthread_create(&tid, NULL, handler, NULL);
-		pthread_detach(tid);
+		std::thread t(handler);
+		t.join();
 	}
+
+//  linux 下  pthread 写法
+//	pthread_t tid;
+//	for(int j = 0; i < 2; j++)
+//	{
+//		pthread_create(&tid, NULL, handler, NULL);
+//		pthread_detach(tid);
+//	}
 	while(i <= 10);
 	return 1;
 }
